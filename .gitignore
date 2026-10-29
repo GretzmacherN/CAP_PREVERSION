@@ -1,0 +1,40 @@
+# Python and notebooks
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+
+# Editors and operating system
+.idea/
+*.iml
+.DS_Store
+
+# R sessions
+.RData
+.Rhistory
+
+# Large analytical objects and count matrices
+*.h5
+*.h5ad
+*.h5ad.tmp
+*.hdf5
+*.loom
+*.mtx
+*.mtx.gz
+*.gtf
+*.gtf.gz
+
+# Generated results
+Adata_Saves/
+Dataframe_Saves/
+Figures/
+Results/
+
+# Trained models and database caches
+scvi_model*/
+scvi_epithelial_model/
+scvi_tumour_model/
+*.pt
+*.pth
+*.sqlite
+*.sqlite3

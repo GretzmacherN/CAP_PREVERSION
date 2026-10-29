@@ -1,0 +1,70 @@
+sample_id,gsm,condition,patient,brca1_carrier,sorting,site,replicate,include,exclusion_reason,files_present
+GSM4909277_B1-KCF0894,GSM4909277,B1,KCF0894,True,unsorted,primary,,False,BRCA1 preneoplastic tissue; neither normal nor tumour,True
+GSM4909279_B1-MH0023,GSM4909279,B1,MH0023,True,unsorted,primary,,False,BRCA1 preneoplastic tissue; neither normal nor tumour,True
+GSM4909278_B1-MH0033,GSM4909278,B1,MH0033,True,unsorted,primary,,False,BRCA1 preneoplastic tissue; neither normal nor tumour,True
+GSM4909280_B1-MH0090,GSM4909280,B1,MH0090,True,unsorted,primary,,False,BRCA1 preneoplastic tissue; neither normal nor tumour,True
+GSM4909295_ER-AH0319,GSM4909295,ER+,AH0319,False,unsorted,primary,,True,,True
+GSM4909296_ER-MH0001,GSM4909296,ER+,MH0001,False,unsorted,primary,,True,,True
+GSM4909302_ER-MH0025,GSM4909302,ER+,MH0025,False,unsorted,primary,,True,,True
+GSM4909305_ER-MH0029-7C,GSM4909305,ER+,MH0029,False,unsorted,primary,7C,True,,True
+GSM4909306_ER-MH0029-9C,GSM4909306,ER+,MH0029,False,unsorted,primary,9C,True,,True
+GSM4909300_ER-MH0032,GSM4909300,ER+,MH0032,False,unsorted,primary,,True,,True
+GSM4909307_ER-MH0040,GSM4909307,ER+,MH0040,False,unsorted,primary,,True,,True
+GSM4909308_ER-MH0040-LN,GSM4909308,ER+,MH0040,False,unsorted,lymph_node,,False,lymph node metastasis; cohort restricted to primary tissue,True
+GSM4909301_ER-MH0042,GSM4909301,ER+,MH0042,False,unsorted,primary,,True,,True
+GSM4909309_ER-MH0043-T,GSM4909309,ER+,MH0043,False,unsorted,primary,T,True,,True
+GSM4909310_ER-MH0043-LN,GSM4909310,ER+,MH0043,False,unsorted,lymph_node,,False,lymph node metastasis; cohort restricted to primary tissue,True
+GSM4909311_ER-MH0056-T,GSM4909311,ER+,MH0056,False,unsorted,primary,T,True,,True
+GSM4909312_ER-MH0056-LN,GSM4909312,ER+,MH0056,False,unsorted,lymph_node,,False,lymph node metastasis; cohort restricted to primary tissue,True
+GSM4909313_ER-MH0064-T,GSM4909313,ER+,MH0064,False,unsorted,primary,T,True,,True
+GSM4909314_ER-MH0064-LN,GSM4909314,ER+,MH0064,False,unsorted,lymph_node,,False,lymph node metastasis; cohort restricted to primary tissue,True
+GSM4909299_ER-MH0114-T3,GSM4909299,ER+,MH0114,False,unsorted,primary,T3,True,,True
+GSM4909297_ER-MH0125,GSM4909297,ER+,MH0125,False,unsorted,primary,,True,,True
+GSM4909303_ER-MH0151,GSM4909303,ER+,MH0151,False,unsorted,primary,,True,,True
+GSM4909304_ER-MH0163,GSM4909304,ER+,MH0163,False,unsorted,primary,,True,,True
+GSM4909315_ER-MH0167-T,GSM4909315,ER+,MH0167,False,unsorted,primary,T,True,,True
+GSM4909316_ER-MH0167-LN,GSM4909316,ER+,MH0167,False,unsorted,lymph_node,,False,lymph node metastasis; cohort restricted to primary tissue,True
+GSM4909317_ER-MH0173-T,GSM4909317,ER+,MH0173,False,unsorted,primary,T,True,,True
+GSM4909318_ER-MH0173-LN,GSM4909318,ER+,MH0173,False,unsorted,lymph_node,,False,lymph node metastasis; cohort restricted to primary tissue,True
+GSM4909298_ER-PM0360,GSM4909298,ER+,PM0360,False,unsorted,primary,,True,,True
+GSM4909289_HER2-AH0308,GSM4909289,HER2+,AH0308,False,unsorted,primary,,True,,True
+GSM4909291_HER2-MH0031,GSM4909291,HER2+,MH0031,False,unsorted,primary,,True,,True
+GSM4909292_HER2-MH0069,GSM4909292,HER2+,MH0069,False,unsorted,primary,,True,,True
+GSM4909293_HER2-MH0161,GSM4909293,HER2+,MH0161,False,unsorted,primary,,True,,True
+GSM4909294_HER2-MH0176,GSM4909294,HER2+,MH0176,False,unsorted,primary,,True,,True
+GSM4909290_HER2-PM0337,GSM4909290,HER2+,PM0337,False,unsorted,primary,,True,,True
+GSM4909272_N-MH0021-Total,GSM4909272,N,MH0021,False,Total,primary,,True,,True
+GSM4909267_N-MH0023-Epi,GSM4909267,N,MH0023,False,Epi,primary,,False,epithelially sorted; unsorted -Total sample used for this patient,True
+GSM4909268_N-MH0023-Total,GSM4909268,N,MH0023,False,Total,primary,,True,,True
+GSM4909262_N-MH0064-Epi,GSM4909262,N,MH0064,False,Epi,primary,,False,epithelially sorted; unsorted -Total sample used for this patient,True
+GSM4909263_N-MH0064-Total,GSM4909263,N,MH0064,False,Total,primary,,True,,True
+GSM4909266_N-MH0169-Total,GSM4909266,N,MH0169,False,Total,primary,,True,,True
+GSM4909273_N-MH275-Epi,GSM4909273,N,MH275,False,Epi,primary,,False,epithelially sorted; unsorted -Total sample used for this patient,True
+GSM4909274_N-MH275-Total,GSM4909274,N,MH275,False,Total,primary,,True,,True
+GSM4909271_N-MH288-Total,GSM4909271,N,MH288,False,Total,primary,,True,,True
+GSM4909260_N-N1105-Epi,GSM4909260,N,N1105,False,Epi,primary,,False,epithelially sorted; cell-type composition not comparable with the unsorted -Total samples in the rest of the cohort,True
+GSM4909264_N-N1B-Epi,GSM4909264,N,N1B,False,Epi,primary,,False,epithelially sorted; cell-type composition not comparable with the unsorted -Total samples in the rest of the cohort,True
+GSM4909255_N-N280-Epi,GSM4909255,N,N280,False,Epi,primary,,False,epithelially sorted; cell-type composition not comparable with the unsorted -Total samples in the rest of the cohort,True
+GSM4909259_N-NE-Epi,GSM4909259,N,NE,False,Epi,primary,,False,epithelially sorted; cell-type composition not comparable with the unsorted -Total samples in the rest of the cohort,True
+GSM4909258_N-NF-Epi,GSM4909258,N,NF,False,Epi,primary,,False,epithelially sorted; cell-type composition not comparable with the unsorted -Total samples in the rest of the cohort,True
+GSM4909254_N-PM0019-Total,GSM4909254,N,PM0019,False,Total,primary,,True,,True
+GSM4909253_N-PM0092-Total,GSM4909253,N,PM0092,False,Total,primary,,True,,True
+GSM4909256_N-PM0095-Epi,GSM4909256,N,PM0095,False,Epi,primary,,False,epithelially sorted; unsorted -Total sample used for this patient,True
+GSM4909257_N-PM0095-Total,GSM4909257,N,PM0095,False,Total,primary,,True,,True
+GSM4909261_N-PM0230-Total,GSM4909261,N,PM0230,False,Total,primary,,True,,True
+GSM4909265_N-PM0233-Total,GSM4909265,N,PM0233,False,Total,primary,,True,,True
+GSM4909269_N-PM0342-Epi,GSM4909269,N,PM0342,False,Epi,primary,,False,epithelially sorted; unsorted -Total sample used for this patient,True
+GSM4909270_N-PM0342-Total,GSM4909270,N,PM0342,False,Total,primary,,True,,True
+GSM4909275_N-PM0372-Epi,GSM4909275,N,PM0372,False,Epi,primary,,False,epithelially sorted; unsorted -Total sample used for this patient,True
+GSM4909276_N-PM0372-Total,GSM4909276,N,PM0372,False,Total,primary,,True,,True
+GSM4909284_TN-MH0114-T2,GSM4909284,TN,MH0114,False,unsorted,primary,T2,True,,True
+GSM4909281_TN-MH0126,GSM4909281,TN,MH0126,False,unsorted,primary,,True,,True
+GSM4909286_TN-B1-MH0131,GSM4909286,TN,MH0131,True,unsorted,primary,,True,,True
+GSM4909282_TN-MH0135,GSM4909282,TN,MH0135,False,unsorted,primary,,True,,True
+GSM4909288_TN-B1-MH0177,GSM4909288,TN,MH0177,True,unsorted,primary,,True,,True
+GSM4909285_TN-B1-MH4031,GSM4909285,TN,MH4031,True,unsorted,primary,,True,,True
+GSM4909283_TN-SH0106,GSM4909283,TN,SH0106,False,unsorted,primary,,True,,True
+GSM4909287_TN-B1-Tum0554,GSM4909287,TN,Tum0554,True,unsorted,primary,,True,,True
+GSM4909320_mER-MH0068-T,GSM4909320,mER,MH0068,False,unsorted,primary,T,False,male breast cancer; distinct biology and sex chromosome complement,True
+GSM4909321_mER-MH0068-LN,GSM4909321,mER,MH0068,False,unsorted,lymph_node,,False,male breast cancer; distinct biology and sex chromosome complement,True
+GSM4909319_mER-PM0178,GSM4909319,mER,PM0178,False,unsorted,primary,,False,male breast cancer; distinct biology and sex chromosome complement,True
