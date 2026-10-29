@@ -13,7 +13,7 @@ The environment snapshots record the software installed when captured. They do n
 The analytical notebooks contain the study-specific sensitivity cells. They can also be executed from the release directory:
 
 ```bash
-python -m scripts.publication_targeted_checks
+python -m cap.publication_targeted_checks
 ```
 
 The command requires the current final epithelial object, programme tables, protein scores and relevant source inputs. It writes to `results/publication_checks/`. It does not overwrite the primary objects or result tables. Doublet-score filtering retains the original programme calls; alternative class ranking is a separate sensitivity.
@@ -21,13 +21,13 @@ The command requires the current final epithelial object, programme tables, prot
 The helper supports section-specific execution, for example:
 
 ```bash
-python -m scripts.publication_targeted_checks --sections doublet protein
+python -m cap.publication_targeted_checks --sections doublet protein
 ```
 
 ## Export and parity checks
 
 ```bash
-python -m scripts.validate_figure_repairs
+python -m cap.validate_figure_repairs
 ```
 
 This validator checks notebook schema and Python syntax, selected nonblank image exports, HPA formula parity and selected primary-statistic parity. It requires the saved analytical tables and the generated validation artifacts under `results/repaired_figures/`, `results/hpa_updated/` and `results/publication_checks/`. For an existing development checkout, the validator also recognises those artifacts in the parent `results/` directory. These artifacts can be supplied separately; they need not be committed to Git. The validator is not a data-free test or a validation of every notebook result.
