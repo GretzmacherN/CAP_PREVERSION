@@ -1,6 +1,6 @@
 # Input data
 
-Paths beginning with `Data/`, `metadata/` or `Adata_Saves/` are relative to `CAP_PROJECT`. Paths beginning with `data/` are relative to this release directory. Protein input paths are relative to `CAP_PROTEOME`.
+Paths beginning with `data/`, `metadata/` or `Adata_Saves/` are relative to `CAP_PROJECT`. Paths beginning with `data/` are relative to this release directory. Protein input paths are relative to `CAP_PROTEOME`.
 
 ## Single-cell counts and metadata
 
@@ -51,9 +51,9 @@ Source studies are Kosok et al. (2020; PXD017025), Lee et al. (2026; PDC000695) 
 
 ## Normal-tissue protein reference
 
-| Input | Expected location |
-|---|---|
-| Cached HPA DVP archive | `Data/dvp_cell_type_group_data.tsv.zip` |
+| Input | Expected location                       |
+|---|-----------------------------------------|
+| Cached HPA DVP archive | `data/dvp_cell_type_group_data.tsv.zip` |
 
 The archive contains the cell-type-group intensity table distributed by HPA. Notebook 003d reads the cached file and records its checksum, source URL, formula and missing-data convention in `Dataframe_Saves/hpa_dvp_input_provenance.json`.
 

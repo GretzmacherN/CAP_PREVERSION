@@ -12,7 +12,7 @@ Create the Python environment and register its notebook kernel:
 # Run from the repository root.
 conda env create --file environment.yml
 conda activate cap
-python -m pip check
+python -m pip install -e .
 python -m ipykernel install --user --name cap --display-name "Python (cap)"
 ```
 
@@ -31,10 +31,8 @@ export CAP_RAW_DATA="/path/to/filtered-count-matrices"
 export CAP_PROTEOME="/path/to/protein-data"
 ```
 
-`CAP_PROJECT` contains `Data/`, `metadata/`, `Adata_Saves/` and `Dataframe_Saves/`. The shared `features.tsv` must be one directory above `CAP_RAW_DATA`. `CAP_PROTEOME` contains the protein matrices and associated metadata.
-
-The [input manifest](docs/INPUTS.md) lists the required files, source studies and expected paths. Frozen signatures and supporting barcode inputs are included in [data/](data/README.md). Keep [scripts/](scripts/) alongside the notebooks; it contains required analysis and plotting functions.
-
+`CAP_PROJECT` contains `data/`, `metadata/`, `Adata_Saves/` and `Dataframe_Saves/`. The shared `features.tsv` must be one directory above `CAP_RAW_DATA`. `CAP_PROTEOME` contains the protein matrices and associated metadata.
+The [input manifest](docs/INPUTS.md) lists the required files, source studies and expected paths. Frozen signatures and supporting barcode inputs are included in [data/](data/README.md). The analysis helpers are in `src/cap/` and are installed with `python -m pip install -e .`, which makes them importable as `cap`.
 ## Notebooks
 
 Run 000 through 003c in the order below, from the repository root, using the `cap` kernel and a fresh kernel for each notebook.
