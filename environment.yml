@@ -18,6 +18,7 @@ dependencies:
   - tqdm=4.67.3
   - openpyxl=3.1.5
   - ipykernel=7.2.0
+  - pytorch=2.11.0
   - pip:
       - -e .
       - celltypist==1.7.1
@@ -28,4 +29,3 @@ dependencies:
       - rpy2-robjects==3.6.4
       - scvi-tools==1.4.2
       - session_info==1.0.1
-      - torch==2.11.0
