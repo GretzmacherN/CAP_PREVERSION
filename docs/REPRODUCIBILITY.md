@@ -2,7 +2,7 @@
 
 ## Execution records
 
-Use the analytical notebooks at the release root. Notebook 001 is a Papermill template; its library-specific execution records belong in `papermill_runs/`. Retain the original executed notebooks and their session reports.
+Use the analytical notebooks at Notebooks/. Notebook 001 is a Papermill template; its library-specific execution records belong in `runs/`. Retain the original executed notebooks and their session reports.
 
 Each analytical stage writes a named output consumed by the next stage. Model directories, parameter dictionaries, cohort/eligibility tables and source-data files accompany the H5ADs. Modification timestamps alone are insufficient to identify a run.
 

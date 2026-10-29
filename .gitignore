@@ -38,3 +38,10 @@ scvi_tumour_model/
 *.pth
 *.sqlite
 *.sqlite3
+# macOS und lokale Artefakte
+._*
+.DS_Store
+.env
+*.pkl
+*.egg-info/
+*.iml
