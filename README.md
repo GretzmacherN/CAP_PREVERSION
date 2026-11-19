@@ -10,6 +10,7 @@ Create the Python environment and register its notebook kernel:
 
 ```bash
 # Run from the repository root.
+cd CAP_Analysis
 conda env create --file environment.yml
 conda activate cap
 python -m pip install -e .
