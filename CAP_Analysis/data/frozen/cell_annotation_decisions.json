@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "decision_timing": "after inspection of initial results",
+  "run_reference_annotation": true,
+  "excluded_patients": {
+    "MH0114": "Different deposited subtype annotations for specimens from the same donor; their clinical relationship could not be resolved from available metadata"
+  },
+  "cluster_labels": {
+    "0": "T Cells",
+    "1": "NK/T Cells",
+    "2": "Epithelial: Mature Luminal",
+    "3": "Epithelial: Luminal Progenitor",
+    "4": "Epithelial: Cycling",
+    "5": "Epithelial",
+    "6": "Epithelial: Luminal",
+    "7": "Epithelial: Mature Luminal",
+    "8": "Epithelial: Mature Luminal",
+    "9": "Epithelial: Mature Luminal",
+    "10": "Epithelial",
+    "11": "Epithelial: Basal/Myoepithelial",
+    "12": "Endothelial Cells",
+    "13": "Epithelial: Basal/Myoepithelial",
+    "14": "B Cells",
+    "15": "Macrophages",
+    "16": "Fibroblasts",
+    "17": "Fibroblasts",
+    "18": "Plasma Cells",
+    "19": "Plasma Cells",
+    "20": "Perivascular Cells",
+    "21": "Vascular Cells",
+    "22": "SPP1+ Macrophages",
+    "23": "Mast Cells",
+    "24": "Epithelial: Mature Luminal",
+    "25": "Lymphatic Endothelial Cells"
+  },
+  "low_quality_clusters": []
+}

@@ -1,0 +1,14 @@
+{
+  "gene_policy.json": {
+    "sha256": "c4213d53e2d3209312e7781c73ed20f660e0f256042956742693c0e0375926a6"
+  },
+  "mammary_lineage_signatures.json": {
+    "sha256": "e82ffe0c1bc402d77819934239129fe169bd11501856943bbf4815f4207094c2"
+  },
+  "cancer_meta_programme_signatures.xlsx": {
+    "sha256": "a980e87edf6b216f591e29452f85d16bdc87b510c9b5989f524096e1862ac377"
+  },
+  "cell_annotation_decisions.json": {
+    "sha256": "9f285714bfdcb2516a669b72a5d15a80f0a4ab861ce39ae9c54aa5cd90b393e9"
+  }
+}
