@@ -16,6 +16,7 @@ _STAGE_NAMES = {
     "03c_antigen_coexpression",
     "03d_normal_tissue_protein",
     "04_programme_summary",
+    "05_three_proteome"
 }
 
 

@@ -1,107 +1,168 @@
-"""Locate the project root and the external raw data without hard-coded paths."""
+"""Central, CWD-independent paths for the CAP analysis."""
+
+from __future__ import annotations
+
 import os
+from dataclasses import dataclass
 from pathlib import Path
 
-ROOT_MARKER = "pyproject.toml"
+_ROOT_MARKER = "pyproject.toml"
+_STAGE_NAMES = {
+    "00_cohort",
+    "01_preprocessing",
+    "02_cell_annotation",
+    "03a_epithelial_integration",
+    "03b_meta_programmes",
+    "03c_antigen_coexpression",
+    "03d_normal_tissue_protein",
+    "04_programme_summary",
+    "05_three_proteome"
+}
 
 
-def project_root(start=None) -> Path:
-    env = os.environ.get("CAP_PROJECT")
-    if env:
-        return Path(env).expanduser().resolve()
-    here = Path(start or Path.cwd()).resolve()
-    for parent in [here, *here.parents]:
-        if (parent / ROOT_MARKER).is_file():
-            return parent
+def _read_dotenv(dotenv_path: Path) -> dict[str, str]:
+    """Read simple KEY=VALUE pairs without adding a runtime dependency."""
+    if not dotenv_path.is_file():
+        return {}
+
+    values: dict[str, str] = {}
+    for raw_line in dotenv_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", maxsplit=1)
+        values[key.strip()] = value.strip().strip("'\"")
+    return values
+
+def repository_root(start: Path | None = None) -> Path:
+    locations = []
+    if start is not None:
+        locations.append(Path(start).resolve())
+    locations.append(Path(__file__).resolve())
+
+    for location in locations:
+        for candidate in (location, *location.parents):
+            if (
+                    (candidate / _ROOT_MARKER).is_file()
+                    and (candidate / "src" / "cap" / "paths.py").is_file()
+            ):
+                return candidate
+
     raise FileNotFoundError(
-        f"No {ROOT_MARKER} found above {here}. Run from inside the repository "
-        "or set CAP_PROJECT to the repository root."
+        "Could not find the CAP_Analysis repository root."
     )
 
-def _ensure(path: Path) -> Path:
-    path.mkdir(parents=True, exist_ok=True)
-    return path
+
+def _setting(name: str, root: Path) -> str | None:
+    """Environment variables take precedence over a local ignored .env file."""
+    return os.environ.get(name) or _read_dotenv(root / ".env").get(name)
+
+@dataclass(frozen=True)
+class ProjectPaths:
+    """Resolved repository, external-data, and run locations."""
+
+    root: Path
+    data_root: Path
+    run_id: str
+
+    @property
+    def frozen_dir(self) -> Path:
+        return self.root / "data" / "frozen"
+
+    @property
+    def manifest_dir(self) -> Path:
+        return self.root / "data" / "manifests"
+
+    @property
+    def raw_counts_dir(self) -> Path:
+        return self.data_root / "raw" / "gse161529" / "raw_counts"
+
+    @property
+    def features_file(self) -> Path:
+        return self.raw_counts_dir.parent / "features.tsv"
+
+    @property
+    def gencode_file(self) -> Path:
+        return self.data_root / "references" / "gencode" / "gencode.v50.annotation.gtf.gz"
+
+    @property
+    def celltypist_model_file(self) -> Path:
+        return self.data_root / "references" / "celltypist" / "model_from_pal.pkl"
+
+    @property
+    def hpa_dvp_file(self) -> Path:
+        return self.data_root / "references" / "hpa" / "dvp_cell_type_group_data.tsv.zip"
+
+    @property
+    def supplied_release_dir(self) -> Path:
+        return self.data_root / "processed" / "supplied_submission_release"
+
+    @property
+    def run_root(self) -> Path:
+        return self.data_root / "runs" / self.run_id
+
+    def stage_dir(self, stage: str) -> Path:
+        if stage not in _STAGE_NAMES:
+            allowed = ", ".join(sorted(_STAGE_NAMES))
+            raise ValueError(f"Unknown stage {stage!r}; expected one of: {allowed}")
+        return self.run_root / stage
+
+    def ensure_stage(self, stage: str) -> Path:
+        """Create the requested run-stage directory if it does not yet exist."""
+        output_dir = self.stage_dir(stage)
+        output_dir.mkdir(parents=True, exist_ok=True)
+        return output_dir
+
+    def prepare_stage(self, stage: str) -> Path:
+        """Create an empty output directory; refuse accidental overwrites."""
+        output_dir = self.stage_dir(stage)
+        if output_dir.exists() and any(output_dir.iterdir()):
+            raise FileExistsError(
+                f"Stage output already exists and is non-empty: {output_dir}. "
+                "Set a new CAP_RUN_ID rather than overwriting it."
+            )
+        output_dir.mkdir(parents=True, exist_ok=True)
+        return output_dir
+
+    def require_file(self, path: Path, description: str) -> Path:
+        if not path.is_file():
+            raise FileNotFoundError(f"Missing {description}: {path}")
+        return path
+
+    def require_dir(self, path: Path, description: str) -> Path:
+        if not path.is_dir():
+            raise FileNotFoundError(f"Missing {description}: {path}")
+        return path
+
+    def validate_base_inputs(self) -> None:
+        """Fail before expensive computation if required single-cell inputs are absent."""
+        self.require_dir(self.raw_counts_dir, "GSE161529 filtered count directory")
+        self.require_file(self.features_file, "shared features.tsv")
+        self.require_file(self.gencode_file, "GENCODE v50 annotation")
+        self.require_file(self.frozen_dir / "gene_policy.json", "frozen gene policy")
+        self.require_file(
+            self.frozen_dir / "mammary_lineage_signatures.json",
+            "frozen lineage signatures",
+            )
+        self.require_file(
+            self.frozen_dir / "cancer_meta_programme_signatures.xlsx",
+            "frozen cancer meta-programme workbook",
+            )
 
 
-def figures_dir() -> Path:
-    return _ensure(project_root() / "results" / "figures")
+def get_paths(start: Path | None = None) -> ProjectPaths:
+    """Return validated settings without creating input directories."""
+    root = repository_root(start)
+    data_root_raw = _setting("CAP_DATA_ROOT", root)
+    run_id = _setting("CAP_RUN_ID", root)
 
+    if not data_root_raw:
+        raise EnvironmentError("CAP_DATA_ROOT is not set in the environment or .env.")
+    if not run_id:
+        raise EnvironmentError("CAP_RUN_ID is not set in the environment or .env.")
 
-def dataframe_dir() -> Path:
-    return _ensure(project_root() / "results" / "dataframe_saves")
+    data_root = Path(data_root_raw).expanduser().resolve()
+    if not data_root.is_dir():
+        raise FileNotFoundError(f"CAP_DATA_ROOT does not exist: {data_root}")
 
-def results_dir() -> Path:
-    return _ensure(project_root() / "results")
-
-
-def runs_dir(step: str) -> Path:
-    """Papermill outputs (executed notebooks and logs) for one pipeline step."""
-    return _ensure(project_root() / "runs" / step)
-
-def data_dir() -> Path:
-    return _ensure(project_root() / "data")
-
-def log_dir() -> Path:
-    return _ensure(project_root() / "runs" / "001_Preprocessing" / "logs")
-
-def interim_head_dir() -> Path:
-    return _ensure(project_root() / "data" / "Adata_Saves" / "Interim_head")
-
-def save_dir() -> Path:
-    return _ensure(project_root() / "data" / "Adata_Saves")
-
-def model_dir() -> Path:
-    return _ensure(project_root() / "data" / "Scvi_Models")
-
-def notebook_dir() -> Path:
-    return _ensure(project_root() / "Notebooks")
-
-def metadata_dir() -> Path:
-    return _ensure(project_root() / "Metadata")
-
-
-
-def sample_sheet() -> Path:
-    path = metadata_dir() / "samples.csv"
-    if not path.is_file():
-        raise FileNotFoundError(f"Sample sheet missing: {display_path(path)}")
-    return path
-
-
-def features_file() -> Path:
-    """features.tsv is expected next to the raw_counts folder (shared by all samples)."""
-    path = raw_data_dir().parent / "features.tsv"
-    if not path.is_file():
-        raise FileNotFoundError("features.tsv not found next to the raw_counts folder")
-    return path
-
-def _read_env_file(root: Path) -> dict:
-    env_file = root / ".env"
-    if not env_file.is_file():
-        return {}
-    pairs = (line.split("=", 1) for line in env_file.read_text().splitlines()
-             if "=" in line and not line.lstrip().startswith("#"))
-    return {k.strip(): v.strip().strip("'\"") for k, v in pairs}
-
-
-def raw_data_dir() -> Path:
-    env = os.environ.get("CAP_RAW_DATA") or _read_env_file(project_root()).get("CAP_RAW_DATA")
-    if not env:
-        raise EnvironmentError(
-            "CAP_RAW_DATA is not set. Either export it or put a line "
-            "CAP_RAW_DATA=/path/to/raw_counts in a .env file in the project root. "
-            "See data/README.md for the GEO download."
-        )
-    path = Path(env).expanduser().resolve()
-    if not path.is_dir():
-        raise FileNotFoundError(f"CAP_RAW_DATA does not exist: {path.name}")
-    return path
-
-
-def display_path(path, root=None) -> Path:
-    """Project-relative where possible, so external absolute paths are never printed."""
-    path, root = Path(path).resolve(), root or project_root()
-    try:
-        return path.relative_to(root)
-    except ValueError:
-        return Path("<external>") / path.name
+    return ProjectPaths(root=root, data_root=data_root, run_id=run_id)
