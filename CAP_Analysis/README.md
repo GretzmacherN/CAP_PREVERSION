@@ -1,61 +1,79 @@
 # Breast cancer single-cell and proteomic analysis
 
-Code for the analysis of epithelial cell states, antigen expression and protein associations in breast cancer, with a normal-tissue protein reference analysis.
+This repository contains the analysis notebooks and shared Python helpers for breast-cancer single-cell and proteomic analyses. The workflow reanalyses filtered count matrices from GSE161529 and includes separate analyses of epithelial cell states, antigen expression, normal-tissue protein reference data, and published proteomics cohorts.
 
-The single-cell workflow reanalyses filtered count matrices from GSE161529. Tumour-derived epithelium is defined by specimen origin; CNV-high status is a separate sensitivity definition, not a complete malignancy classifier. Antigen detection is defined from raw UMI counts. ALRA values are used only for exploratory diagnostics.
+Tumour-derived epithelium is defined by specimen origin. CNV-high status is a sensitivity definition, not a complete malignancy classifier. Antigen detection is based on raw UMI counts; ALRA values are used only for exploratory diagnostics. Protein abundance associations do not demonstrate molecular interaction or same-cell co-expression.
 
-## Installation
+## Repository layout and data
 
-Create the Python environment and register its notebook kernel:
+The repository root is this directory, identified by `pyproject.toml`. Keep large inputs and run outputs outside the Git repository under `CAP_DATA_ROOT`. The repository contains selected frozen reference files under `data/frozen/` and their checksum manifest under `data/manifests/`.
 
-```bash
-# Run from the repository root.
-conda env create --file environment.yml
-conda activate cap
+The path helper supports these configuration values:
+
+```text
+CAP_DATA_ROOT=C:/path/to/CAP_Data
+CAP_RUN_ID=your_run_id
+```
+
+The same `CAP_RUN_ID` identifies all stages of one analysis run. Use a new ID for a new run. The path helper derives the input and output locations from `CAP_DATA_ROOT`; separate environment variables for individual data and output subdirectories are not needed.
+
+Expected external inputs include:
+
+- Filtered GSE161529 matrices: `$CAP_DATA_ROOT/raw/gse161529/raw_counts/`
+- Shared feature file: `$CAP_DATA_ROOT/raw/gse161529/features.tsv`
+- GENCODE annotation: `$CAP_DATA_ROOT/references/gencode/gencode.v50.annotation.gtf.gz`
+- CellTypist model: `$CAP_DATA_ROOT/references/celltypist/model_from_pal.pkl`
+- HPA reference archive: `$CAP_DATA_ROOT/references/hpa/dvp_cell_type_group_data.tsv.zip`
+- Three-proteome supplements: `$CAP_DATA_ROOT/references/proteomics/`
+
+The proteomics directory must contain `Lee_MOESM2_ESM.csv`, `Lehmann.csv`, `mmc2.xlsx`, `cd-22-0200_table_s3_suppst3.xlsx`, `cd-22-0200_table_s1_suppst1.csv`, `h.all.v2026.1.Hs.symbols.gmt`, and `lee_uniprot_gene_mapping.csv`.
+
+Do not commit local `.env` files, raw data, or run outputs. Check that `.env` is ignored by Git before creating or committing local configuration; the standalone `.gitignore` must include that rule. The checked-in `.env.example` should contain placeholders only and should be kept aligned with the two supported settings above.
+
+## Environment and setup
+
+The reported Windows environment is named `cap-rerun`. From PowerShell, activate it, install this repository in editable mode, and register the notebook kernel:
+
+```powershell
+conda activate cap-rerun
+Set-Location C:\path\to\CAP_Analysis
 python -m pip install -e .
-python -m ipykernel install --user --name cap --display-name "Python (cap)"
+python -m ipykernel install --user --name cap-rerun --display-name "Python (cap-rerun)"
 ```
 
-The notebooks also require an external R installation with miQC, scDblFinder, scry and ALRA, accessed through rpy2. R and package versions, including the ALRA source commit, are recorded in [environment_R.json](environment_R.json). The Python YAML does not install these R dependencies; the JSON records their provenance and is not an installation lockfile.
+Start Jupyter or the IDE from inside the repository directory so the path helper can locate `pyproject.toml`. Restart the notebook kernel after changing the package or environment.
 
-The recorded environment is Apple Silicon macOS. scVI training uses `accelerator="mps"`; select a supported accelerator when running on other hardware. The full platform-specific environment snapshot is optional. A fresh installation has not yet been validated.
+The checked-in `environment.yml` and `environment_R.json` record an Apple Silicon/macOS environment; they are not validated Windows lockfiles. The Windows R setup and current validation limits are described in [ENVIRONMENT.md](ENVIRONMENT.md). In particular, a fresh Windows installation and the complete R-dependent single-cell workflow have not yet been confirmed.
 
-## Input data
+## Notebook workflow
 
-Large input datasets are stored outside the repository. Set their locations before starting Jupyter or the notebook editor:
+The core single-cell chain is `000` → `001` → `002` → `003a` → `003b` → `003c` → `004`. Notebook `001_Papermill.ipynb` is the driver that runs `001_Preprocessing.ipynb` for included samples; the preprocessing notebook uses the full library `sample_id` parameter. Notebooks `003d_Normal_Tissue_Protein.ipynb` and `005_Three_Proteome.ipynb` are independent of that single-cell chain.
 
-```bash
-# Replace these example paths with the local data directories.
-export CAP_PROJECT="/path/to/project-data"
-export CAP_RAW_DATA="/path/to/filtered-count-matrices"
-export CAP_PROTEOME="/path/to/protein-data"
-```
-
-`CAP_PROJECT` contains `data/`, `metadata/`, `Adata_Saves/` and `Dataframe_Saves/`. The shared `features.tsv` must be one directory above `CAP_RAW_DATA`. `CAP_PROTEOME` contains the protein matrices and associated metadata.
-The [input manifest](docs/INPUTS.md) lists the required files, source studies and expected paths. Frozen signatures and supporting barcode inputs are included in [data/](data/README.md). The analysis helpers are in `src/cap/` and are installed with `python -m pip install -e .`, which makes them importable as `cap`.
-## Notebooks
-
-Run 000 through 003c in the order below, from the repository root, using the `cap` kernel and a fresh kernel for each notebook.
-
-| Notebook | Analysis | Main output |
+| Notebook | Stage | Purpose |
 |---|---|---|
-| [000_Raw_Data_And_Cohort.ipynb](000_Raw_Data_And_Cohort.ipynb) | Library inventory and cohort selection | `metadata/samples.csv` |
-| [001_Preprocessing.ipynb](001_Preprocessing.ipynb) | Per-library QC, doublet detection and preprocessing | `Adata_Saves/head/<sample_id>.h5ad` |
-| [002_Celltype_ID.ipynb](002_Celltype_ID.ipynb) | Atlas integration and cell-type annotation | `Adata_Saves/epithelial.h5ad` |
-| [003a_Epithelial_Integration_Malignancy_Publication.ipynb](003a_Epithelial_Integration_Malignancy_Publication.ipynb) | Epithelial integration and inferred CNV | `Adata_Saves/epithelial_tumour_scvi.h5ad` |
-| [003b_Meta_Programmes_Publication.ipynb](003b_Meta_Programmes_Publication.ipynb) | Meta-programme scoring and cell-state comparisons | `Adata_Saves/epithelial_meta_programmes.h5ad` |
-| [003c_Antigen_Coexpression_Publication.ipynb](003c_Antigen_Coexpression_Publication.ipynb) | Antigen detection, donor comparisons and sensitivity analyses | `Adata_Saves/epithelial_antigen_coexpression.h5ad` |
-| [003d_HPA_Normal_Tissue_Liability.ipynb](003d_HPA_Normal_Tissue_Liability.ipynb) | Normal-tissue protein co-representation | `Dataframe_Saves/hpa_dvp_*.csv` |
-| [Three_Proteome.ipynb](Three_Proteome.ipynb) | Cell-line and biopsy protein associations | `$CAP_PROTEOME/output/` |
+| [000_Raw_Data_And_Cohort.ipynb](notebooks/000_Raw_Data_And_Cohort.ipynb) | `00_cohort` | Inventory raw libraries and write the cohort table. |
+| [001_Papermill.ipynb](notebooks/001_Papermill.ipynb) | `01_preprocessing` | Run per-sample preprocessing through Papermill. |
+| [001_Preprocessing.ipynb](notebooks/001_Preprocessing.ipynb) | `01_preprocessing` | Preprocess one library; normally invoked by the Papermill driver. |
+| [002_Celltype_ID.ipynb](notebooks/002_Celltype_ID.ipynb) | `02_cell_annotation` | Integrate the atlas and annotate cell types. |
+| [003a_Epithelial_Integration.ipynb](notebooks/003a_Epithelial_Integration.ipynb) | `03a_epithelial_integration` | Integrate epithelial cells and perform the CNV sensitivity analysis. |
+| [003b_Meta_Programmes.ipynb](notebooks/003b_Meta_Programmes.ipynb) | `03b_meta_programmes` | Score meta-programmes and compare cell states. |
+| [003c_Antigen_Coexpression.ipynb](notebooks/003c_Antigen_Coexpression.ipynb) | `03c_antigen_coexpression` | Analyse antigen detection, donor comparisons, and sensitivities. |
+| [003d_Normal_Tissue_Protein.ipynb](notebooks/003d_Normal_Tissue_Protein.ipynb) | `03d_normal_tissue_protein` | Analyse normal-tissue protein reference data. |
+| [004_Programme_Summary.ipynb](notebooks/004_Programme_Summary.ipynb) | `04_programme_summary` | Summarise programme scores across epithelial clusters. |
+| [005_Three_Proteome.ipynb](notebooks/005_Three_Proteome.ipynb) | `05_three_proteome` | Analyse prespecified protein-abundance associations across three proteomics cohorts. |
 
-Notebook 001 is a Papermill template run once per included library. Its `patient` parameter takes the full library `sample_id`, not the donor identifier. Sample-specific executed notebooks are saved in `papermill_runs/`.
+Use a fresh kernel for each notebook. Run the core chain in order; run `003d` and `005` separately when their inputs are available. See [VALIDATION.md](VALIDATION.md) for what has and has not been validated.
 
-003d and `Three_Proteome` are independent of the single-cell chain. The primary Anurag protein analysis uses baseline specimens only.
+## Run outputs
 
-## Results
+Stage outputs are stored outside the repository under:
 
-Single-cell and HPA tables are written to `$CAP_PROJECT/Dataframe_Saves/` and figures to `$CAP_PROJECT/Figures/`. Protein results are written to `$CAP_PROTEOME/output/`. Derived H5ADs and trained models remain in the external project-data directory.
+```text
+$CAP_DATA_ROOT/runs/$CAP_RUN_ID/<stage>/
+```
 
-The [figure notebooks](figure_notebooks/README.md) export figures from saved results without retraining models. Their plotting-only objects must not be used to overwrite analytical H5ADs.
+The stage directories are `00_cohort`, `01_preprocessing`, `02_cell_annotation`, `03a_epithelial_integration`, `03b_meta_programmes`, `03c_antigen_coexpression`, `03d_normal_tissue_protein`, `04_programme_summary`, and `05_three_proteome`. Depending on the stage, outputs include H5AD objects, models, tables, figures, logs, and executed notebooks. The three-proteome stage writes its tables, figures, `run_provenance.json`, and `input_checksums.json` in its stage directory.
 
-Population definitions, expression layers and statistical conventions are documented in [docs/ANALYSIS.md](docs/ANALYSIS.md). Validation commands and execution records are described in [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md).
+**Rerun warning:** the current cohort notebook and full Papermill preprocessing run contain stage-reset/deletion logic. Do not rerun them against an existing run ID or treat an existing run as immutable until those code paths are corrected. Use a new `CAP_RUN_ID` for any test or rerun.
+
+Figures should be saved through the shared helpers in [`src/cap/figures.py`](src/cap/figures.py); path and run configuration is implemented in [`src/cap/paths.py`](src/cap/paths.py), with provenance helpers in [`src/cap/provenance.py`](src/cap/provenance.py).
